@@ -1,8 +1,8 @@
 import { FileX, Trash, Pencil } from "lucide-react"
 import { Outlet, useNavigate } from "react-router-dom"
-import data from "../data"
 import { useState } from "react"
 import DeleteProduct from "./DeleteProduct"
+import data from "../data"
 
 const ProductList = () => {
   const navigate = useNavigate()
