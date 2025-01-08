@@ -1,5 +1,5 @@
 import { createContext, useState } from "react"
-import { doc , setDoc , getDoc } from "firebase/firestore"
+import { doc , setDoc , getDoc , updateDoc } from "firebase/firestore"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
 import { db,auth } from "../firebase"
 import { useNavigate } from "react-router-dom"
@@ -10,6 +10,13 @@ const GlobalState = createContext()
 export const StateProvider = ({children}) => {
   const [isAuthenticated,setAuthenticated] = useState(false)
   const [errMsg,setErrMsg] = useState('')
+  const [name,setName] = useState('')
+  const [price,setPrice] = useState('')
+  const [image,setImage] = useState('')
+  const [day,setDay] = useState('Monday')
+  const [finalProcess,setFinalProcess] = useState(false)
+
+  
   const navigate = useNavigate()
 
   const registerUser = async (email,password,firstName,lastName,setLoading) => {
@@ -136,10 +143,57 @@ export const StateProvider = ({children}) => {
     }
   }
 
+  // PRODUCT FUNCTIONALITIES 
+  
+  const addFood = async(setLoading) => {
+    try{
+      setLoading(true)
+      const productArrayReference = doc(db,'Foods',day)
+      const productArrays = await getDoc(productArrayReference)
+      const productArray = productArrays.data().foods || []
+        const newProduct = {
+         id:String(Math.round(Math.random()*500)),
+         Img:'no image',
+         product:name,
+         price:Number(price),
+        }
+        setFinalProcess(false)
+        if(productArray.length === 3 ) {
+          Swal.fire({
+            title: "List Full",
+            text: "The current day has a full list , please select a different day",
+            icon: "error"
+          })
+          return;
+        }
+        await updateDoc(productArrayReference,{
+          foods : [...productArray,newProduct]
+        })
+      setName('')
+      setPrice('')
+      Swal.fire({
+        title: "Product added successfully.",
+        text: "See all products in the list section",
+        icon: "success"
+      })
+    }catch(error){
+     console.log(error)
+     Swal.fire({
+      title: "Network Error",
+      text: "Please check your internet connection.",
+      icon: "error"
+    })
+    }finally{
+      setLoading(false)
+    }
+  }
+
   return (
     <GlobalState.Provider value={{
       registerUser,errMsg,LoginUser,
-      isAuthenticated,setAuthenticated
+      isAuthenticated,setAuthenticated,
+      addFood,name,setName,price,setPrice,
+      image,setImage,day,setDay,finalProcess,setFinalProcess
     }}>
       {children}
     </GlobalState.Provider>

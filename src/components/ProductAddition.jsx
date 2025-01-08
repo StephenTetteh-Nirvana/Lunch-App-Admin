@@ -1,10 +1,19 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { CloudUpload } from 'lucide-react'
+import GlobalState from '../context/GlobalState'
 
 const ProductAddition = () => {
-  
+
+  const {name,setName,price,setPrice,setFinalProcess} = useContext(GlobalState)
+
+  const foodData = () => {
+    if(name && price){
+      setFinalProcess(true)
+    }
+  }
+
   return (
-    <main>
+    <main className='relative'>
       <div className="p-4 border border-slate-700 w-[150px] h-[100px] flex flex-col items-center justify-center mt-3 
         rounded-md hover:cursor-pointer"
        >
@@ -16,23 +25,22 @@ const ProductAddition = () => {
         <div>
           <label>Product Name</label><br/>
           <input type="text" placeholder='Enter product name...' 
-            className='p-2 border border-slate-700 rounded-[4px] mt-1 placeholder:text-sm  outline-none focus:border-2 focus:border-sky-500' 
-          />
-        </div>
-
-        <div className='mt-2'>
-          <label>Product Description</label><br/>
-          <input type="message" 
-            placeholder='Enter product description...' 
-            className='p-2 py-10 rounded-[4px] border border-slate-700 mt-1 placeholder:text-sm 
-            placeholder:absolute placeholder:top-3 placeholder:left-2 focus:border-2 focus:border-sky-500 outline-none' 
+            className='p-2 border border-slate-700 rounded-[4px] mt-1 placeholder:text-sm  
+            outline-none focus:border-2 focus:border-sky-500' 
+            value={name}
+            onChange={(e)=>setName(e.target.value)}
+            required
           />
         </div>
 
         <div className='mt-2'>
           <label>Product Price</label><br/>
-          <input type="number" placeholder='Enter product price...' className='p-2 border border-slate-700 rounded-sm mt-1 
+          <input type="number" placeholder='Enter product price...' 
+            className='p-2 border border-slate-700 rounded-sm mt-1 
             placeholder:text-sm focus:border-2 focus:border-sky-500 outline-none'
+            value={price}
+            onChange={(e)=>setPrice(e.target.value)}
+            required
           />
         </div>
 
@@ -40,6 +48,7 @@ const ProductAddition = () => {
           <button 
             className='bg-black py-3 px-8 text-white text-sm hover:bg-transparent
            hover:border-black hover:border hover:text-black transition-background duration-300'
+            onClick={()=>foodData()}
            >
             ADD
           </button>
