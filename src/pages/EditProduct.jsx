@@ -1,17 +1,25 @@
-import { Camera, X } from 'lucide-react'
+import { Camera, X, Check } from 'lucide-react'
 import { useNavigate , useParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import React, { useState } from 'react'
+import { updateDoc, doc, getDoc } from 'firebase/firestore'
+import {useContext, useEffect, useState } from 'react'
+import { db } from '../firebase'
 import Waakye from "../assets/images/waakye.jpg"
+import GlobalState from '../context/GlobalState'
 
 const EditProduct = () => {
-
-  const foods = localStorage.getItem('foods') !== null ? JSON.parse(localStorage.getItem('foods')) : []
-  const [closing,setClosing] = useState(false)
   const {id} = useParams()
-
-  const navigate = useNavigate()
+  const {selectedDay} = useContext(GlobalState)
+  const foods = localStorage.getItem('foods') !== null ? JSON.parse(localStorage.getItem('foods')) : []
   const foundProduct = foods.find((p)=>p.id === id)
+
+  const [name,setName] = useState('')
+  const [price,setPrice] = useState('')
+  const [closing,setClosing] = useState(false)
+  const [disabled,setDisabled] = useState(false)
+  const [loading,setLoading] = useState(false)
+  const [success,setSuccess] = useState(false)
+  const navigate = useNavigate()
 
   const closeForm = () => {
     setClosing(true)
@@ -22,19 +30,51 @@ const EditProduct = () => {
     },300)
   }
 
-  const editProduct = () =>{
-    try{
-      const unsub = onSnapshot(doc(db,"Foods",selectedDay),(snapshot)=>{
-        const allFoods = snapshot.data().foods || []
-        setFoods(allFoods)
-        localStorage.setItem('foods',JSON.stringify(allFoods))
-        console.log(foods)
-        setFetching(false)
-      })
-      return unsub;
-    }catch(error){
-      console.log(error)
-      setFetching(false)
+  useEffect(()=>{
+    if(foundProduct.product === name && foundProduct.price === price){
+      setDisabled(true)
+    }else{
+      setDisabled(false)
+    }
+  },[name,price])
+
+  useEffect(()=>{
+    setName(foundProduct.product)
+    setPrice(foundProduct.price)
+  },[])
+
+  const editFood = async() => {
+    if (name === "" || price === ""){
+      return;
+    }else{
+      try{
+        setLoading(true)
+        const productArrayReference = doc(db,'Foods',selectedDay)
+        const productArrays = await getDoc(productArrayReference)
+        const productArray = productArrays.data().foods || []
+        const updatedProductArray = productArray.map((item)=>{
+          if(foundProduct.id === item.id){
+            const updatedProduct = {
+              ...item,
+              id:foundProduct.id,
+              product:name,
+              price:price
+            }
+            return updatedProduct;
+          }else{
+            return item;
+          }
+        })
+        await updateDoc(productArrayReference,{
+          foods:updatedProductArray
+        })
+        setLoading(false)
+        setSuccess(true)
+      }catch(error){
+        console.log(error)
+      }finally{
+        setLoading(false)
+      }
     }
   }
 
@@ -62,28 +102,63 @@ const EditProduct = () => {
                 <Camera color='white' size={25}/>
               </span>
             </div>
-  
-            <div className='hover:cursor-pointer' onClick={()=>closeForm()}>
-              <X/>
-            </div>
+            
+            { loading ?
+              <div className='hover:cursor-not-allowed opacity-70'>
+                <X/>
+              </div>
+              :
+              <div className='hover:cursor-pointer' onClick={()=>closeForm()}>
+                <X/>
+              </div>
+            }
           </section>
   
           <section className='w-[98%]'>
             <div>
               <label>Product</label>
-              <input type='text' className='w-full py-2 pl-2 border border-slate-500 rounded-md' value={foundProduct.product}/>
+              <input type='text' 
+                className='w-full py-2 pl-2 border border-slate-500 rounded-md' 
+                value={name}
+                onChange={(e)=>setName(e.target.value)}
+                required
+              />
             </div>
     
             <div className='mt-2'>
               <label>Price</label>
-              <input type='number' className='w-full py-2 pl-2 border border-slate-500 rounded-md' value={foundProduct.price}/>
+              <input type='number' 
+                className='w-full py-2 pl-2 border border-slate-500 rounded-md' 
+                value={price}
+                onChange={(e)=>setPrice(e.target.value)}
+                required
+              />
             </div>
-    
-            <button className='bg-gradient-to-tr from-red-500 via-yellow-500 to-green-500 
-              w-full rounded-[5px] text-white py-2 mt-5 text-md'
+            
+            { loading ? 
+              <button className=" mt-5 bg-gradient-to-tr from-red-500 via-yellow-500 to-green-500 
+                p-2 flex justify-center items-center w-full rounded-md text-white"
               >
-              Save Changes
-            </button>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              </button>
+              :
+              success ?
+              <button className=" mt-5 bg-green-500 p-2 flex flex-row justify-center items-center w-full text-sm gap-2
+                rounded-md text-white cursor-auto"
+              >
+                <Check size={20} />
+                Product updated successfully
+              </button>
+              :
+              <button className='bg-gradient-to-tr from-red-500 via-yellow-500 to-green-500 
+                w-full rounded-[5px] text-white py-2 mt-5 text-md'
+                onClick={()=>editFood()}
+                disabled={disabled}
+                style={disabled ? {cursor:'not-allowed',opacity:0.7} : {cursor:'pointer',opacity:1}}
+                >
+                Save Changes
+              </button>
+            }
           </section>
   
         </motion.form>

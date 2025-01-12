@@ -14,6 +14,8 @@ export const StateProvider = ({children}) => {
   const [price,setPrice] = useState('')
   const [image,setImage] = useState('')
   const [day,setDay] = useState('Monday')
+  const [deleteLoader,setDeleteLoader] = useState(false)
+  const [selectedDay,setSelectedDay] = useState('Monday')
   const [finalProcess,setFinalProcess] = useState(false)
 
   
@@ -188,12 +190,32 @@ export const StateProvider = ({children}) => {
     }
   }
 
+  const deleteFood = async (foodID,closeModal) => {
+    try{
+      setDeleteLoader(true)
+      const productArrayReference = doc(db,'Foods',selectedDay)
+      const productArrays = await getDoc(productArrayReference)
+      const productArray = productArrays.data().foods || []
+      const updatedProductArray = productArray.filter((p)=>p.id !== foodID)
+      await updateDoc(productArrayReference,{
+        foods:updatedProductArray
+      })
+      closeModal()
+    }catch(error){
+      console.log(error)
+    }finally{
+      setDeleteLoader(false)
+    }
+  }
+
   return (
     <GlobalState.Provider value={{
       registerUser,errMsg,LoginUser,
       isAuthenticated,setAuthenticated,
       addFood,name,setName,price,setPrice,
-      image,setImage,day,setDay,finalProcess,setFinalProcess
+      image,setImage,day,setDay,finalProcess,
+      setFinalProcess,selectedDay,setSelectedDay,
+      deleteFood,deleteLoader
     }}>
       {children}
     </GlobalState.Provider>

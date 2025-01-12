@@ -1,4 +1,4 @@
-import { CirclePlus, LayoutList, ListOrdered, LogOut, ChevronRight, ChevronLeft } from "lucide-react"
+import { CirclePlus, LayoutList, ListOrdered, ChevronRight, ChevronLeft, House } from "lucide-react"
 import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
@@ -35,9 +35,12 @@ const Sidebar = () => {
           <span><ListOrdered /></span>
           {expand && 'Orders'}
         </li>
-        <li className='flex flex-row gap-3 hover:text-[#2666CF] hover:cursor-pointer p-3 text-white'>
-          <span><LogOut /></span>
-          {expand && 'Logout'}
+        <li className='flex flex-row gap-3 hover:text-[#2666CF] hover:cursor-pointer p-3 text-white'
+          onClick={()=>navigate('/departments')}
+          style={ location.pathname === '/departments' ? {color:'#2666CF'} : {} }
+        >
+          <span><House /></span>
+          {expand && 'Departments'}
         </li>
       </ul> 
     </div>

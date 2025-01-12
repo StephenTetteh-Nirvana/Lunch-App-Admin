@@ -1,20 +1,20 @@
 import { FileX, Trash, Pencil } from "lucide-react"
 import { Outlet, useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { onSnapshot , doc } from "firebase/firestore"
 import { db } from "../firebase"
 import Waakye from "../assets/images/waakye.jpg"
 import DeleteProduct from "./DeleteProduct"
+import GlobalState from "../context/GlobalState"
 
 const ProductList = () => {
   const navigate = useNavigate()
 
+  const {selectedDay,setSelectedDay} = useContext(GlobalState)
   const [openModal,setOpenModal] = useState(false)
   const [fetching,setFetching] = useState(false)
-  const [selectedDay,setSelectedDay] = useState('Monday')
   const [foods,setFoods] = useState([])
-
-  const list = []
+  const [foodID,setFoodID] = useState('')
 
   const days = ['Monday','Tuesday','Wednesday','Thursday','Friday']
 
@@ -26,7 +26,6 @@ const ProductList = () => {
         const allFoods = snapshot.data().foods || []
         setFoods(allFoods)
         localStorage.setItem('foods',JSON.stringify(allFoods))
-        console.log(foods)
         setFetching(false)
       })
       return unsub;
@@ -77,7 +76,7 @@ const ProductList = () => {
                   <h3>{item.price}</h3>
                   <div className="flex gap-3">
                     <Pencil color="blue" size={20} onClick={()=>navigate(`/foodList/${item.id}`)} style={{cursor:'pointer'}} />
-                    <Trash color="red" size={20} style={{cursor:'pointer'}} onClick={()=>setOpenModal(true)} />
+                    <Trash color="red" size={20} style={{cursor:'pointer'}} onClick={()=>{setOpenModal(true),setFoodID(item.id)}}/>
                   </div>
                 </div>
               ))}
@@ -98,7 +97,7 @@ const ProductList = () => {
             </div>
           </div>
         }
-        {openModal && <DeleteProduct openModal={openModal} setOpenModal={setOpenModal}/>}
+        {openModal && <DeleteProduct openModal={openModal} setOpenModal={setOpenModal} foodID={foodID}/>}
         <Outlet/>   
       </div>
     </div>

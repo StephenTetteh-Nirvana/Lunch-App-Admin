@@ -1,19 +1,19 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Trash2Icon } from 'lucide-react'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import GlobalState from '../context/GlobalState';
 
-const Modal = ({ openModal, setOpenModal }) => {
+const Modal = ({ openModal, setOpenModal, foodID }) => {
 
-    const [isClosing,setIsClosing] = useState(false)
-
-    const closeModal = () => {
-        setIsClosing(true)
-        setTimeout(() => {
-          setIsClosing(false)
-          setOpenModal(false)
-        }, 200)
-      };
-
+  const [isClosing,setIsClosing] = useState(false)
+  const {deleteFood,deleteLoader} = useContext(GlobalState)
+  const closeModal = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      setIsClosing(false)
+      setOpenModal(false)
+    }, 200)
+  }
 
   return (
     <AnimatePresence>
@@ -39,15 +39,23 @@ const Modal = ({ openModal, setOpenModal }) => {
               Are you sure you want to delete this product?
             </h2>
             <div className="mt-2 flex justify-center">
-              <button className="bg-red-600 p-2 px-5 rounded-md text-white">
-                Delete
-              </button>
-              <button
-                className="bg-gray-500 p-2 px-5 rounded-md text-white ml-2"
-                onClick={() => closeModal()}
-              >
-                Cancel
-              </button>
+              { deleteLoader ? 
+                <button className="bg-red-600 p-2 px-24 rounded-md text-white">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </button>
+                :
+                <>
+                  <button className="bg-red-600 p-2 px-5 rounded-md text-white" onClick={()=>deleteFood(foodID,closeModal)}>
+                    Delete
+                  </button>
+                  <button
+                    className="bg-gray-500 p-2 px-5 rounded-md text-white ml-2"
+                    onClick={() => closeModal()}
+                  >
+                    Cancel
+                  </button>
+                </>
+              }
             </div>
           </motion.div>
         </motion.div>
