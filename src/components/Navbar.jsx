@@ -59,7 +59,7 @@ const Navbar = () => {
               <UserCircle2/>
               <span className="ml-2">Account</span>
             </li>
-            <li className="flex flex-row list-none p-2 hover:bg-slate-100">
+            <li className="flex flex-row list-none p-2 hover:bg-slate-100" onClick={()=>logOut()}>
               <LogOut/>
               <span className="ml-2">LogOut</span>
             </li>
@@ -92,6 +92,12 @@ const Navbar = () => {
             style={ location.pathname === '/orders' ? {color:'#2666CF'} : {} }
           >
             List Of Foods
+          </li>
+          <li className="text-center text-white p-2 text-lg"
+            onClick={()=>navigate('/departments')}
+            style={ location.pathname === '/departments' ? {color:'#2666CF'} : {} }
+          >
+            Departments
           </li>
           <div className="mt-2 flex flex-row justify-center gap-5">
             <button className="bg-[#2666CF] text-white rounded-md py-2 px-3" onClick={()=>setOpenModal(true)}>Account</button>

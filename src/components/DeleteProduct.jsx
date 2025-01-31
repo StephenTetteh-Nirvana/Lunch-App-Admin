@@ -7,6 +7,7 @@ const Modal = ({ openModal, setOpenModal, foodID }) => {
 
   const [isClosing,setIsClosing] = useState(false)
   const {deleteFood,deleteLoader} = useContext(GlobalState)
+  
   const closeModal = () => {
     setIsClosing(true)
     setTimeout(() => {

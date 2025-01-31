@@ -1,12 +1,13 @@
 import React from 'react'
 import Sidebar from '../components/Sidebar'
+import DepartmentsList from '../components/DepartmentsList'
 
 const Departments = () => {
   return (
     <div className='flex flex-row relative'>
       <Sidebar/>
-      <div className='flex-1 ml-5 w-[97%] mt-4'>
-        <h2>Departments</h2>
+      <div className='flex-1 ml-5 w-[90%] mt-4'>
+        <DepartmentsList/>
       </div>
     </div>
   )

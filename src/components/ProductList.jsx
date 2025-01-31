@@ -20,7 +20,6 @@ const ProductList = () => {
 
   const fetchFoods = () => {
     try{
-      console.log('running')
       setFetching(true)
       const unsub = onSnapshot(doc(db,"Foods",selectedDay),(snapshot)=>{
         const allFoods = snapshot.data().foods || []

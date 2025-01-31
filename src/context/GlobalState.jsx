@@ -1,5 +1,5 @@
 import { createContext, useState } from "react"
-import { doc , setDoc , getDoc , updateDoc } from "firebase/firestore"
+import { doc , setDoc , getDoc , updateDoc, collection, onSnapshot } from "firebase/firestore"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
 import { db,auth } from "../firebase"
 import { useNavigate } from "react-router-dom"
@@ -14,6 +14,8 @@ export const StateProvider = ({children}) => {
   const [price,setPrice] = useState('')
   const [image,setImage] = useState('')
   const [day,setDay] = useState('Monday')
+  const [departments,setDepartments] = useState([])
+  const [fetchingDepartments,setFetchingDeparments] = useState(false)
   const [deleteLoader,setDeleteLoader] = useState(false)
   const [selectedDay,setSelectedDay] = useState('Monday')
   const [finalProcess,setFinalProcess] = useState(false)
@@ -99,8 +101,16 @@ export const StateProvider = ({children}) => {
         const userDocRef = doc(db,"Users",user.uid)
         const userDoc = await getDoc(userDocRef) 
         if(userDoc.exists){
-          console.log(userDoc.data())
-          localStorage.setItem('userData',JSON.stringify(userDoc.data()))
+          const status = userDoc.data().status
+          if(status === 'Personnel'){
+            setErrMsg('Only admin accounts can log in')
+            setTimeout(()=>{
+             setErrMsg('')
+            },2000)
+            return;
+          }else{
+            localStorage.setItem('userData',JSON.stringify(userDoc.data()))
+          }
         }
       }
       localStorage.setItem('user',JSON.stringify(true))
@@ -208,6 +218,27 @@ export const StateProvider = ({children}) => {
     }
   }
 
+  const fetchDepartments = () => {
+    try{
+      setFetchingDeparments(true)
+      const unsub = onSnapshot(collection(db,"Departments"),(snapshot)=>{
+      const list =  snapshot.docs.map((document)=>({
+        id: document.id,
+        ...document.data()
+      }))
+      setDepartments(list)
+      localStorage.setItem('departments',JSON.stringify(list))
+      setFetchingDeparments(false)
+      })
+      return unsub;
+    }catch(error){
+      console.log(error)
+      setFetchingDeparments(false)
+    }
+  }
+
+  
+
   return (
     <GlobalState.Provider value={{
       registerUser,errMsg,LoginUser,
@@ -215,7 +246,8 @@ export const StateProvider = ({children}) => {
       addFood,name,setName,price,setPrice,
       image,setImage,day,setDay,finalProcess,
       setFinalProcess,selectedDay,setSelectedDay,
-      deleteFood,deleteLoader
+      deleteFood,deleteLoader,fetchDepartments,departments,
+      fetchingDepartments
     }}>
       {children}
     </GlobalState.Provider>

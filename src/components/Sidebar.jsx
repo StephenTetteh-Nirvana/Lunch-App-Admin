@@ -31,7 +31,10 @@ const Sidebar = () => {
           <span><LayoutList /></span>
           {expand && 'List Of Foods'}
         </li>
-        <li className='flex flex-row gap-3 hover:text-[#2666CF] hover:cursor-pointer p-3 text-white'>
+        <li className='flex flex-row gap-3 hover:text-[#2666CF] hover:cursor-pointer p-3 text-white'
+          onClick={()=>navigate('/orders')}
+          style={ location.pathname === '/orders' ? {color:'#2666CF'} : {} }
+        >
           <span><ListOrdered /></span>
           {expand && 'Orders'}
         </li>

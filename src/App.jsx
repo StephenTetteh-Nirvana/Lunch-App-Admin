@@ -9,6 +9,7 @@ import Register from "./pages/Register"
 import NotFound from "./pages/NotFound"
 import ForgotPassword from "./pages/ForgotPassword"
 import Departments from "./pages/Departments"
+import Orders from "./pages/Orders"
 
 const App = () => {
   const location = useLocation()
@@ -44,6 +45,7 @@ const App = () => {
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
         <Route path="/forgotPassword" element={<ForgotPassword/>}/>
+        <Route path="/orders" element={<Orders/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </div>
