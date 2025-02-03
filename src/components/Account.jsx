@@ -10,13 +10,13 @@ import GlobalState from '../context/GlobalState'
 const Account = ({ openModal, setOpenModal }) => {
 
   const userData = localStorage.getItem('userData') !== null ? JSON.parse(localStorage.getItem('userData')) : []
-  
+
   const {fetchUser} = useContext(GlobalState)
 
   const [isClosing,setIsClosing] = useState(false)
   const [firstName,setFirstName] = useState('')
   const [lastName,setLastName] = useState('')
-  const [disabled,setDisabled] = useState(false)
+  const [disabled,setDisabled] = useState(true)
   const [editing,setEditing] = useState(false)
   const [loading,setLoading] = useState(false)
 
@@ -57,6 +57,8 @@ const Account = ({ openModal, setOpenModal }) => {
         title: "Your profile has been updated.",
         icon: "success",
       });
+      setEditing(false)
+      setDisabled(true)
     }
     }catch(error){
       console.log(error)
@@ -107,9 +109,9 @@ const Account = ({ openModal, setOpenModal }) => {
                   <input type='text' 
                     className='w-full py-2 pl-2 border border-slate-500 rounded-md' 
                     autoComplete='off' 
-                    readOnly={disabled}
                     value={firstName}
                     disabled={disabled}
+                    style={disabled ? {cursor:"not-allowed"}:{}}
                     onChange={(e)=>setFirstName(e.target.value)}
                   />
                 </div>
@@ -119,9 +121,9 @@ const Account = ({ openModal, setOpenModal }) => {
                   <input type='text' 
                     className='w-full py-2 pl-2 border border-slate-500 rounded-md' 
                     autoComplete='off'
-                    readOnly={disabled}
                     value={lastName}
                     disabled={disabled}
+                    style={disabled ? {cursor:"not-allowed"}:{}}
                     onChange={(e)=>setLastName(e.target.value)}
                   />
                 </div>
