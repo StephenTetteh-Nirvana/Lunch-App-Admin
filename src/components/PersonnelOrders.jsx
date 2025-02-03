@@ -21,13 +21,13 @@ const PersonnelOrders = ({ personnelData,setViewOrders }) => {
             <div key={day} className="grid grid-cols-3 w-full gap-5 p-3 mt-2">
               <h3 className="font-semibold">{day}</h3>
               <p>{product?.product}</p>
-              <p>{product?.price}</p>
+              <p>₵{product?.price}</p>
             </div>
           ));
         })}
   
         <h3 className="flex justify-end text-lg font-semibold">
-          Total: {orders.map((order) => {
+          Total: ₵{orders.map((order) => {
             return Object.entries(order).reduce((total, [day, product]) => total + product.price,0)
           })}
         </h3>

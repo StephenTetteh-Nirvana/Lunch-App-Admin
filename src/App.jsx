@@ -9,7 +9,7 @@ import Register from "./pages/Register"
 import NotFound from "./pages/NotFound"
 import ForgotPassword from "./pages/ForgotPassword"
 import Departments from "./pages/Departments"
-import Orders from "./pages/Orders"
+import Orders from "./pages/Departments"
 
 const App = () => {
   const location = useLocation()
@@ -41,11 +41,10 @@ const App = () => {
         <Route path="/foodList" element={<ListOfFoods/>}>
           <Route path=":id" element={<EditProduct/>}/>
         </Route>
-        <Route path="/departments" element={<Departments/>}></Route>
         <Route path="/login" element={<Login/>}/>
         <Route path="/register" element={<Register/>}/>
         <Route path="/forgotPassword" element={<ForgotPassword/>}/>
-        <Route path="/orders" element={<Orders/>}/>
+        <Route path="/departments" element={<Orders/>}/>
         <Route path="*" element={<NotFound/>}/>
       </Routes>
     </div>
