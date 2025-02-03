@@ -157,6 +157,19 @@ export const StateProvider = ({children}) => {
     }
   }
 
+  const fetchUser = async() => {
+    const user = auth.currentUser
+    if(user){
+      const userDocRef = doc(db, "Users", user.uid);
+      const unsub = onSnapshot(userDocRef,(userData)=>{
+        if(userData.exists()){
+          localStorage.setItem('userData',JSON.stringify(userData.data()))
+        }
+      })
+      return unsub
+    }
+  }
+
   // PRODUCT FUNCTIONALITIES 
   const localFoods = async () => {
     const list = []
@@ -271,7 +284,7 @@ export const StateProvider = ({children}) => {
       image,setImage,day,setDay,finalProcess,
       setFinalProcess,selectedDay,setSelectedDay,
       deleteFood,deleteLoader,fetchDepartments,departments,
-      fetchingDepartments,localFoods
+      fetchingDepartments,localFoods,fetchUser
     }}>
       {children}
     </GlobalState.Provider>

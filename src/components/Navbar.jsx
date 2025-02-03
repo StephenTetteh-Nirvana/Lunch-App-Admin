@@ -10,6 +10,8 @@ import GlobalState from "../context/GlobalState"
 
 const Navbar = () => {
   const user = localStorage.getItem('user') !== null ? JSON.parse(localStorage.getItem('user')) : null
+  const userData = localStorage.getItem('userData') !== null ? JSON.parse(localStorage.getItem('userData')) : []
+
 
   const {setAuthenticated} = useContext(GlobalState)
 
@@ -50,7 +52,7 @@ const Navbar = () => {
       {user ? (
         <div className="group hover:cursor-pointer mobile:hidden">
           <div className="bg-[#2666CF] rounded-full text-white w-[50px] h-[50px] flex justify-center items-center">
-            <h3 className="font-semibold text-xl">S</h3>
+            <h3 className="font-semibold text-xl">{userData.firstName[0]}</h3>
           </div>
           <div className="invisible shadow-black shadow-md p-2 rounded-md 
             z-10 bg-white absolute right-10 top-10 group-hover:visible"
