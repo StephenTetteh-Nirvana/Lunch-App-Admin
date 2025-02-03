@@ -79,7 +79,7 @@ const Navbar = () => {
       
       {/* MOBILE VIEW */}
 
-      <div className={`hidden mobile:block bg-black ${expand ? 'h-[185px]' : 'h-0'} transition-height duration-300 overflow-hidden`}>
+      <div className={`hidden mobile:block bg-black ${expand ? 'h-[270px]' : 'h-0'} transition-height duration-300 overflow-hidden`}>
         <ul className="mt-5">
           <li className="text-center text-white p-2 text-lg"
             onClick={()=>navigate('/')}
@@ -87,13 +87,19 @@ const Navbar = () => {
           >
             Add Foods
           </li>
-          <li className="text-center text-white p-2 text-lg"
-            onClick={()=>navigate('/orders')}
-            style={ location.pathname === '/orders' ? {color:'#2666CF'} : {} }
+          <li className="text-center text-white p-2 text-lg cursor-pointer"
+            onClick={()=>navigate('/foodList')}
+            style={ location.pathname === '/foodList' ? {color:'#2666CF'} : {} }
           >
             List Of Foods
           </li>
-          <li className="text-center text-white p-2 text-lg"
+          <li className="text-center text-white p-2 text-lg cursor-pointer"
+            onClick={()=>navigate('/orders')}
+            style={ location.pathname === '/orders' ? {color:'#2666CF'} : {} }
+          >
+            Orders
+          </li>
+          <li className="text-center text-white p-2 text-lg cursor-pointer"
             onClick={()=>navigate('/departments')}
             style={ location.pathname === '/departments' ? {color:'#2666CF'} : {} }
           >

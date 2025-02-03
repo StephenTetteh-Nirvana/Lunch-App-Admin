@@ -1,16 +1,20 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { CloudUpload } from 'lucide-react'
 import GlobalState from '../context/GlobalState'
 
 const ProductAddition = () => {
 
-  const {name,setName,price,setPrice,setFinalProcess} = useContext(GlobalState)
+  const {name,setName,price,setPrice,setFinalProcess,localFoods} = useContext(GlobalState)
 
   const foodData = () => {
     if(name && price){
       setFinalProcess(true)
     }
   }
+
+  useEffect(()=>{
+    localFoods()
+  },[])
 
   return (
     <main className='relative'>

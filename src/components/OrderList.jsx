@@ -89,7 +89,7 @@ const OrderList = ({departmentID,showOrders,setShowOrders}) => {
                   <img src={Profile} alt='user' className='w-[40px] h-[40px] rounded-full object-cover bg-cover'/>
                   <p className='list-none'>{personnel.firstName}</p>
                   <button className='list-none bg-white border border-slate-300 shadow-sm 
-                    cursor-pointer p-2 text-sm text-black rounded-md hover:bg-slate-100 max-w-[40%]'
+                    cursor-pointer p-2 text-sm text-black rounded-md hover:bg-slate-100 w-[50%] mobile:w-full'
                     onClick={()=>passDownPersonnelOrders(personnel.email)}
                   >
                     View Order
@@ -97,7 +97,8 @@ const OrderList = ({departmentID,showOrders,setShowOrders}) => {
                 </div>
               ))
             }
-            {viewOrders && <PersonnelOrders personnelData={personnelData} setViewOrders={setViewOrders}/>}
+            {viewOrders && 
+            <PersonnelOrders personnelData={personnelData} setViewOrders={setViewOrders}/>}
           </motion.div>
         </motion.div>
       )}

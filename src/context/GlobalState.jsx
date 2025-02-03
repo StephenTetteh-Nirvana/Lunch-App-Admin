@@ -8,6 +8,8 @@ import Swal from "sweetalert2"
 const GlobalState = createContext()
 
 export const StateProvider = ({children}) => {
+  const allFoodsLocally = localStorage.getItem('allFoods') !== null ? JSON.parse(localStorage.getItem('allFoods')) : []
+
   const [isAuthenticated,setAuthenticated] = useState(false)
   const [errMsg,setErrMsg] = useState('')
   const [name,setName] = useState('')
@@ -156,10 +158,32 @@ export const StateProvider = ({children}) => {
   }
 
   // PRODUCT FUNCTIONALITIES 
-  
+  const localFoods = async () => {
+    const list = []
+    const productArrayReference = collection(db,'Foods')
+    const unsub = onSnapshot(productArrayReference,(snapshot)=>{
+      snapshot.docs.forEach((document)=>{
+        const allFoods = document.data().foods
+        list.push(...allFoods)
+      })
+      localStorage.setItem('allFoods',JSON.stringify(list))
+    })
+    return unsub;
+  }
+
   const addFood = async(setLoading) => {
     try{
       setLoading(true)
+      const itemExists = allFoodsLocally.some((foodItem) => foodItem.product === name)
+      if(itemExists){
+        Swal.fire({
+          title: "Product already exists",
+          text: "This product already exists in your list",
+          icon: "error"
+        })
+        setLoading(false)
+        return;
+      }
       const productArrayReference = doc(db,'Foods',day)
       const productArrays = await getDoc(productArrayReference)
       const productArray = productArrays.data().foods || []
@@ -247,7 +271,7 @@ export const StateProvider = ({children}) => {
       image,setImage,day,setDay,finalProcess,
       setFinalProcess,selectedDay,setSelectedDay,
       deleteFood,deleteLoader,fetchDepartments,departments,
-      fetchingDepartments
+      fetchingDepartments,localFoods
     }}>
       {children}
     </GlobalState.Provider>
