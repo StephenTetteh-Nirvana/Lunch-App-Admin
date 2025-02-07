@@ -1,15 +1,8 @@
-import { Routes,Route,useLocation,useNavigate } from "react-router-dom"
-import { useEffect } from "react"
+import { useLocation,useNavigate} from "react-router-dom"
+import { Suspense, useEffect } from "react"
 import Navbar from "./components/Navbar"
-import AddFoods from "./pages/AddFoods"
-import ListOfFoods from "./pages/ListOfFoods"
-import EditProduct from "./pages/EditProduct"
-import Login from "./pages/Login"
-import Register from "./pages/Register"
-import NotFound from "./pages/NotFound"
-import ForgotPassword from "./pages/ForgotPassword"
-import Departments from "./pages/Departments"
-import Orders from "./pages/Departments"
+import MainRoutes from "./routes/main-routes"
+
 
 const App = () => {
   const location = useLocation()
@@ -36,17 +29,10 @@ const App = () => {
         }
       </div>
 
-      <Routes>
-        <Route path="/"  element={<AddFoods/>}></Route>
-        <Route path="/foodList" element={<ListOfFoods/>}>
-          <Route path=":id" element={<EditProduct/>}/>
-        </Route>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/register" element={<Register/>}/>
-        <Route path="/forgotPassword" element={<ForgotPassword/>}/>
-        <Route path="/departments" element={<Orders/>}/>
-        <Route path="*" element={<NotFound/>}/>
-      </Routes>
+        <Suspense fallback={<div className="flex justify-center items-center">Loading your content...</div>}>
+          <MainRoutes/>
+        </Suspense>
+
     </div>
   )
 }
